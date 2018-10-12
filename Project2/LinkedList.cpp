@@ -224,7 +224,6 @@ int LinkedList::at(size_t index) const
 
 void LinkedList::remove(size_t index)
 {
-	//TODO: Write for 2waylist
 	if (index >= size) {
 		throw std::out_of_range("Index is greater than list size");
 	}
@@ -249,12 +248,8 @@ void LinkedList::remove(size_t index)
 			current = current->next;
 			counter++;
 		}
-		if (current->prev != nullptr) {
-			current = current->next;
-		}
-		else
-		{
-			head = current;
-		}
+		current->prev->next = current->next;
+		current->next->prev = current->prev;
+		delete current;
 	}
 }
