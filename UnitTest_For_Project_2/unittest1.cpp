@@ -205,5 +205,163 @@ namespace UnitTest_For_Project_2
 
 			Assert::IsTrue(list1.equals(&list2));
 		}
+
+		TEST_METHOD(at)
+		{
+			LinkedList list;
+			list.push_back(1);
+			list.push_back(2);
+			list.push_back(3);
+			list.push_back(4);
+
+			Assert::IsTrue(list.at(0) == 1 && list.at(1) == 2 && list.at(2) == 3 && list.at(3) == 4);
+		}
+
+		TEST_METHOD(remove)
+		{
+			LinkedList list1;
+			list1.push_back(1);
+			list1.push_back(2);
+			list1.push_back(3);
+			list1.push_back(4);
+
+			LinkedList list2;
+			list2.push_back(1);
+			list2.push_back(2);
+			list2.push_back(4);
+
+			list1.remove(2);
+
+			Assert::IsTrue(list1.equals(&list2));
+		}
+
+		TEST_METHOD(get_size_true_1)
+		{
+			LinkedList list;
+			Assert::IsTrue(list.get_size() == 0);
+		}
+
+		TEST_METHOD(get_size_true_2)
+		{
+			LinkedList list;
+			list.push_back(1);
+			list.push_back(2);
+			list.push_back(3);
+			list.push_back(4);
+			Assert::IsTrue(list.get_size() == 4);
+		}
+
+		TEST_METHOD(get_size_false)
+		{
+			LinkedList list;
+			list.push_back(1);
+			list.push_back(4);
+			Assert::IsFalse(list.get_size() == 3);
+		}
+
+		TEST_METHOD(clear_1)
+		{
+			LinkedList list;
+			list.push_back(1);
+			list.push_back(2);
+			list.push_back(3);
+			list.push_back(4);
+
+			list.clear();
+			Assert::IsTrue(list.isEmpty());
+		}
+
+		TEST_METHOD(clear_2)
+		{
+			LinkedList list;
+			list.clear();
+			Assert::IsTrue(list.isEmpty());
+		}
+
+		TEST_METHOD(set)
+		{
+			LinkedList list1;
+			list1.push_back(1);
+			list1.push_back(1);
+
+			LinkedList list2;
+			list2.push_back(1);
+			list2.push_back(2);
+
+			list1.set(1, 2);
+
+			Assert::IsTrue(list1.equals(&list2));
+		}
+
+		TEST_METHOD(isEmpty_true)
+		{
+			LinkedList list;
+			Assert::IsTrue(list.isEmpty());
+		}
+
+		TEST_METHOD(isEmpty_false)
+		{
+			LinkedList list;
+			list.push_back(1);
+
+			Assert::IsFalse(list.isEmpty());
+		}
+
+		TEST_METHOD(contains_with_empty_list)
+		{
+			LinkedList list1;
+			list1.push_back(1);
+			list1.push_back(2);
+			list1.push_back(3);
+			list1.push_back(4);
+
+			LinkedList list2;
+
+			Assert::IsTrue(list1.contains(&list2));
+		}
+
+		TEST_METHOD(contains_with_fill_list_true_1)
+		{
+			LinkedList list1;
+			list1.push_back(1);
+			list1.push_back(2);
+			list1.push_back(3);
+			list1.push_back(4);
+
+			LinkedList list2;
+			list2.push_back(1);
+
+			Assert::IsTrue(list1.contains(&list2));
+		}
+
+		TEST_METHOD(contains_with_fill_list_true_2)
+		{
+			LinkedList list1;
+			list1.push_back(1);
+			list1.push_back(2);
+			list1.push_back(3);
+			list1.push_back(4);
+
+			LinkedList list2;
+			list2.push_back(3);
+			list2.push_back(4);
+
+			Assert::IsTrue(list1.contains(&list2));
+		}
+
+		TEST_METHOD(contains_with_fill_list_false)
+		{
+			LinkedList list1;
+			list1.push_back(1);
+			list1.push_back(2);
+			list1.push_back(3);
+			list1.push_back(4);
+
+			LinkedList list2;
+			list2.push_back(4);
+			list2.push_back(3);
+
+			Assert::IsFalse(list1.contains(&list2));
+		}
 	};
 }

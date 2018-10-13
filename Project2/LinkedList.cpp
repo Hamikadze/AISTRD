@@ -85,6 +85,7 @@ bool LinkedList::isEmpty() const
 
 bool LinkedList::contains(LinkedList* list) const
 {
+	if (list->size == 0) return true;
 	Node * current = head;
 	Node * current_find = list->head;
 	bool contains = false;
@@ -265,5 +266,6 @@ void LinkedList::remove(size_t index)
 		current->prev->next = current->next;
 		current->next->prev = current->prev;
 		delete current;
+		size--;
 	}
 }
