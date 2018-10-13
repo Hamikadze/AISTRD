@@ -17,6 +17,7 @@ LinkedList::LinkedList()
 
 LinkedList::~LinkedList()
 {
+	clear();
 }
 
 void LinkedList::add_first(int newElem)
@@ -47,18 +48,17 @@ void LinkedList::clear()
 	if (size == 0) return;
 
 	if (size == 1) {
+		reset_list();
 		delete head;
 		delete tail;
-		reset_list();
 	}
 	else {
-		Node * current = head;
 		while (head != nullptr) {
 			pop_front();
 		}
+		reset_list();
 		delete head;
 		delete tail;
-		reset_list();
 	}
 }
 
@@ -109,6 +109,18 @@ bool LinkedList::contains(LinkedList* list) const
 	return contains;
 }
 
+bool LinkedList::equals(LinkedList * list) const
+{
+	if (size != list->size)//if size equals
+		return false;
+	for (int i = 0; i < size; i++)
+	{
+		if (at(i) != list->at(i))
+			return false;
+	}
+	return true;
+}
+
 void LinkedList::push_back(int newElem)
 {
 	if (size == 0) {
@@ -137,9 +149,9 @@ void LinkedList::pop_back()
 	if (size == 0) return;
 
 	if (size == 1) {
+		reset_list();
 		delete head;
 		delete tail;
-		reset_list();
 	}
 	else {
 		Node * current = tail->prev;
@@ -155,9 +167,9 @@ void LinkedList::pop_front()
 	if (size == 0) return;
 
 	if (size == 1) {
+		reset_list();
 		delete head;
 		delete tail;
-		reset_list();
 	}
 	else {
 		Node * current = head->next;
@@ -169,8 +181,8 @@ void LinkedList::pop_front()
 
 void LinkedList::insert(size_t index, int newElem)
 {
-	if (index >= size) {
-		throw std::out_of_range("Index is greater than list size");
+	if (index >= size + 1) {
+		throw std::out_of_range("Index is greater than list size and more than the index for teoretical last element");
 	}
 	else {
 		if (size == 0)
@@ -181,8 +193,9 @@ void LinkedList::insert(size_t index, int newElem)
 		if (index == 0)
 		{
 			push_front(newElem);
+			return;
 		}
-		if (index == size - 1)
+		if (index == size)
 		{
 			push_back(newElem);
 			return;
@@ -203,6 +216,7 @@ void LinkedList::insert(size_t index, int newElem)
 		{
 			head = current;
 		}
+		size++;
 	}
 }
 

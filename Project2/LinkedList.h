@@ -14,13 +14,20 @@ private:
 			this->next = next;
 			this->prev = prev;
 		};
-		~Node() {};
+		~Node()
+		{
+			next = nullptr;
+			delete next;
+			prev = nullptr;
+			delete prev;
+			data = 0;
+		};
 		int data;
 		Node * next;
 		Node * prev;
 	};
-	Node * head;
-	Node * tail;
+	Node * head{};
+	Node * tail{};
 	size_t size;
 public:
 	LinkedList();
@@ -38,4 +45,5 @@ public:
 	void set(size_t index, int newElem) const; // замена элемента по индексу на передаваемый элемент
 	bool isEmpty() const; // проверка на пустоту списка
 	bool contains(LinkedList* list) const; // проверка на содержание другого списка в списке
+	bool equals(LinkedList* list) const;
 };
