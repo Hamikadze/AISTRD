@@ -7,6 +7,7 @@ void LinkedList::reset_list()
 {
 	head = nullptr;
 	tail = nullptr;
+	size = 0;
 }
 
 LinkedList::LinkedList()
@@ -24,6 +25,7 @@ void LinkedList::add_first(int newElem)
 {
 	head = new Node(newElem);
 	tail = head;
+	size = 1;
 }
 
 size_t LinkedList::get_size() const
@@ -36,11 +38,12 @@ void LinkedList::print_to_console() const
 	if (size == 0)
 		return;
 	Node * current = head;
-	while (current->next != tail) {
+	std::cout << "[nullptr] <- ";
+	while (current != nullptr) {
 		std::cout << "[" << current->data << "] <- ";
 		current = current->next;
 	}
-	std::cout << "[nullptr]";
+	std::cout << "[nullptr]" << std::endl;
 }
 
 void LinkedList::clear()
@@ -130,8 +133,8 @@ void LinkedList::push_back(int newElem)
 	else {
 		tail->next = new Node(newElem, nullptr, tail);
 		tail = tail->next;
+		size++;
 	}
-	size++;
 }
 
 void LinkedList::push_front(int newElem)
@@ -141,8 +144,8 @@ void LinkedList::push_front(int newElem)
 	}
 	else {
 		head = new Node(newElem, head, nullptr);
+		size++;
 	}
-	size++;
 }
 
 void LinkedList::pop_back()
@@ -159,8 +162,8 @@ void LinkedList::pop_back()
 		current->next = nullptr;
 		delete tail;
 		tail = current;
+		size--;
 	}
-	size--;
 }
 
 void LinkedList::pop_front()
@@ -176,8 +179,8 @@ void LinkedList::pop_front()
 		Node * current = head->next;
 		delete head;
 		head = current;
+		size--;
 	}
-	size--;
 }
 
 void LinkedList::insert(size_t index, int newElem)
@@ -186,7 +189,7 @@ void LinkedList::insert(size_t index, int newElem)
 		throw std::out_of_range("Index is greater than list size and more than the index for teoretical last element");
 	}
 	else {
-		if (size == 0)
+		if (size == 0 && index == 0)
 		{
 			add_first(newElem);
 			return;
