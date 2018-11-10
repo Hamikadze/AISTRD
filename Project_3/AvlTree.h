@@ -30,6 +30,7 @@ public:
 		node* FindMin();
 		node* RemoveMin();
 		node* Remove(int key);
+		bool Contains(int key);
 		void Print(int l);
 		~node();
 		int key;

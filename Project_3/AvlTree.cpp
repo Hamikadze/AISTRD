@@ -144,6 +144,23 @@ AvlTree::node* AvlTree::node::Remove(int key)
 	return this->Balance();
 }
 
+bool AvlTree::node::Contains(int key)
+{
+	if (!this) return false;
+	if (key < this->key)
+	{
+		return this->left->Contains(key);
+	}
+	else if (key > this->key)
+	{
+		return this->right->Contains(key);
+	}
+	else // k == p->key
+	{
+		return true;
+	}
+}
+
 void AvlTree::node::Print(int l)
 {
 	if (this)
