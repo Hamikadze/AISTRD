@@ -1,37 +1,41 @@
 #include "pch.h"
 #include "AvlTree.h"
 #include <iostream>
+#include <string>
+#include <windows.h>
 
-AvlTree::AvlTree(int key)
+AvlTree::AvlTree(const int key)
 {
 	root = new node(key);
 }
 
-Iterator* AvlTree::create_dft_iterator()
+Iterator* AvlTree::create_dft_iterator() const
 {
 	return new DftIterator(this->root);
 }
 
-Iterator*AvlTree::create_bft_iterator()
+Iterator*AvlTree::create_bft_iterator() const
 {
 	return new BftIterator(this->root);
 }
 
+Iterator* AvlTree::create_sft_iterator() const
+{
+	return new SftIterator(this->root);
+}
+
 AvlTree::~AvlTree()
 {
+	root->Delete();
+	if (root->left != nullptr)
+		root->left = nullptr;
+	if (root->right != nullptr)
+		root->right = nullptr;
+	root = nullptr;
 }
+
 int AvlTree::DftIterator::next()
 {
-	/*if (node == null) return;
-	console.log(node.value);
-	preOrder(node.left);
-	preOrder(node.right);*/
-
-	/*if (node == null) return;
-		inOrder(node.left);
-		console.log(node.value);
-		inOrder(node.right);*/
-
 	if (current != nullptr) {
 		int key = current->key;
 		if (current->right != nullptr)
@@ -52,27 +56,9 @@ bool AvlTree::DftIterator::has_next()
 	return (s.size() || current != nullptr);
 }
 
-//
-//int AvlTree::AvlIterator::next()
-//{
-//	while (current != nullptr) {
-//		s.push(current);
-//		current = current->left;
-//	}
-//	current = s.top();
-//	s.pop();
-//	const int key = current->key;
-//	current = current->right;
-//	return key;
-//}
-//
-//bool AvlTree::AvlIterator::has_next()
-//{
-//	return (s.size() || current != nullptr);
-//}
-
 AvlTree::node::~node()
 {
+	free(this);
 }
 
 AvlTree::node::node(int k)
@@ -101,6 +87,32 @@ bool AvlTree::BftIterator::has_next()
 	return (q.size() || current->left != nullptr && current->right != nullptr);
 }
 
+int AvlTree::SftIterator::next()
+{
+	while (current != nullptr) {
+		s.push(current);
+		current = current->left;
+	}
+	current = s.top();
+	s.pop();
+	const int key = current->key;
+	current = current->right;
+	return key;
+}
+
+bool AvlTree::SftIterator::has_next()
+{
+	return (s.size() || current != nullptr);
+}
+
+void AvlTree::node::Delete()
+{
+	if (this == nullptr) return;
+	this->left->Delete();
+	this->right->Delete();
+	free(this);
+}
+
 void AvlTree::Insert(int key)
 {
 	root = root->insert(key);
@@ -111,14 +123,14 @@ void AvlTree::Remove(int key)
 	root = root->remove(key);
 }
 
-bool AvlTree::Contains(int key)
+bool AvlTree::Contains(int key) const
 {
 	return root->contains(0);
 }
 
-void AvlTree::Print()
+void AvlTree::Print() const
 {
-	root->print(0);
+	root->print("", true, true);
 }
 
 unsigned AvlTree::node::Height()
@@ -126,7 +138,7 @@ unsigned AvlTree::node::Height()
 	return this ? this->height : 0;
 }
 
-int AvlTree::node::BalanceValue()
+int AvlTree::node::BalanceValue() const
 {
 	return this->right->Height() - this->left->Height();
 }
@@ -212,26 +224,26 @@ AvlTree::node* AvlTree::node::remove_min()
 AvlTree::node* AvlTree::node::remove(int key)
 {
 	if (!this) return nullptr;
-	if (key < this->key)
+	if (key < this->key)//если искомое значение меньше ключа
 	{
-		this->left = this->left->remove(key);
+		this->left = this->left->remove(key);//рекурсивный перебор левого дерева
 	}
-	else if (key > this->key)
+	else if (key > this->key)//если искомое значение больше ключа
 	{
-		this->right = this->right->remove(key);
+		this->right = this->right->remove(key);//рекурсивный перебор правого дерева
 	}
-	else // k == p->key
+	else // if(k == p->key) значение для удаления найдено, оно в текущем узле
 	{
-		node* q = this->left;
+		node* q = this->left; //сохраняем для объединения левую и правую ветви
 		node* r = this->right;
-		delete this;
-		if (!r)return q;
-		node* min = r->find_min();
-		min->right = remove_min();
-		min->left = q;
-		return min->balance();
+		free(this); //удаляем узел
+		if (!r)return q; //если ветви справа не существует, то возвращаем левую ветвь ВСЁ, ЧТО МЫ ВОЗВРАЩАЕМ МЫ ВЕРХНИХ БЛОКАХ IF ELSE ПРИСВАЕМАЕМ К ПРАВОЙ ИЛИ ЛЕВОЙ ВЕТВИ
+		node* min = r->find_min(); //находим минимальное значение в левой ветви, посути это вообще самое минимальное значение в дереве
+		min->right = r->remove_min(); //посути мы выпрямляем веточку, чтобы потом было проще её сбалансировать
+		min->left = q; //присваиваем левую ветвь на левую ветвь минимального значения
+		return min->balance(); //выполняем балансировку ветки, которую мы сейчас склеивали
 	}
-	return this->balance();
+	return this->balance();//выполняем балансировку всего дерева
 }
 
 bool AvlTree::node::contains(int key)
@@ -251,13 +263,22 @@ bool AvlTree::node::contains(int key)
 	}
 }
 
-void AvlTree::node::print(int l)
+void AvlTree::node::print(string indent, bool last, bool right) const
 {
-	if (this)
-	{
-		this->left->print(l + 1);
-		for (int i = 0; i < l; i++) std::cout << "   ";
-		std::cout << this->key << std::endl;
-		this->right->print(l + 1);
+	const HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	// you can loop k higher to see more color choices
+	if (this == nullptr) return;
+	std::cout << indent.c_str() << "+- ";
+	if (indent != "") {
+		SetConsoleTextAttribute(hConsole, (right ? 10 : 12));
+		std::cout << (right ? "R:" : "L:");
 	}
+	else {
+		SetConsoleTextAttribute(hConsole, 11);
+	}
+	std::cout << this->key << std::endl;
+	SetConsoleTextAttribute(hConsole, 15);
+	indent += last ? "   " : "|  ";
+	this->left->print(indent, this->right == nullptr, false);
+	this->right->print(indent, true, true);
 }
