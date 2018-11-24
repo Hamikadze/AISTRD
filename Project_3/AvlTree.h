@@ -34,6 +34,7 @@ private:
 
 public:
 	AvlTree(int key);
+	AvlTree();
 	~AvlTree();
 	class DftIterator : public Iterator
 	{

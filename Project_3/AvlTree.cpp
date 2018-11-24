@@ -9,6 +9,11 @@ AvlTree::AvlTree(const int key)
 	root = new node(key);
 }
 
+AvlTree::AvlTree()
+{
+	root = nullptr;
+}
+
 Iterator* AvlTree::create_dft_iterator() const
 {
 	return new DftIterator(this->root);
