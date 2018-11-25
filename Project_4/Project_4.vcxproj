@@ -40,7 +40,7 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
@@ -153,6 +153,7 @@
   <ItemGroup>
     <ClInclude Include="ArraySort.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="Stopwatch.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ArraySort.cpp" />

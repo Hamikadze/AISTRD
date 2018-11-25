@@ -16,16 +16,19 @@ AvlTree::AvlTree()
 
 Iterator* AvlTree::create_dft_iterator() const
 {
+	if (this == nullptr && this->root == nullptr) throw std::exception("Tree does not exist");
 	return new DftIterator(this->root);
 }
 
 Iterator*AvlTree::create_bft_iterator() const
 {
+	if (this == nullptr && this->root == nullptr) throw std::exception("Tree does not exist");
 	return new BftIterator(this->root);
 }
 
 Iterator* AvlTree::create_sft_iterator() const
 {
+	if (this == nullptr && this->root == nullptr) throw std::exception("Tree does not exist");
 	return new SftIterator(this->root);
 }
 
@@ -42,7 +45,7 @@ AvlTree::~AvlTree()
 int AvlTree::DftIterator::next()
 {
 	if (current != nullptr) {
-		int key = current->key;
+		const int key = current->key;
 		if (current->right != nullptr)
 			s.push(current);
 		current = current->left;
@@ -110,12 +113,13 @@ bool AvlTree::SftIterator::has_next()
 	return (s.size() || current != nullptr);
 }
 
-void AvlTree::node::Delete()
+AvlTree::node* AvlTree::node::Delete()
 {
-	if (this == nullptr) return;
+	if (this == nullptr) return nullptr;
 	this->left->Delete();
 	this->right->Delete();
 	free(this);
+	return nullptr;
 }
 
 void AvlTree::Insert(int key)
@@ -130,7 +134,7 @@ void AvlTree::Remove(int key)
 
 bool AvlTree::Contains(int key) const
 {
-	return root->contains(0);
+	return root->contains(key);
 }
 
 void AvlTree::Print() const
@@ -152,7 +156,6 @@ void AvlTree::node::FixHeight()
 {
 	unsigned int height_left = this->left->Height();
 	unsigned int height_right = this->right->Height();
-
 	this->height = (height_left > height_right ? height_left : height_right) + 1;
 }
 
@@ -228,27 +231,28 @@ AvlTree::node* AvlTree::node::remove_min()
 
 AvlTree::node* AvlTree::node::remove(int key)
 {
-	if (!this) return nullptr;
-	if (key < this->key)//если искомое значение меньше ключа
+	if (!this)
+		return nullptr;
+	if (key < this->key)
 	{
-		this->left = this->left->remove(key);//рекурсивный перебор левого дерева
+		this->left = this->left->remove(key);
 	}
-	else if (key > this->key)//если искомое значение больше ключа
+	else if (key > this->key)
 	{
-		this->right = this->right->remove(key);//рекурсивный перебор правого дерева
+		this->right = this->right->remove(key);
 	}
-	else // if(k == p->key) значение для удаления найдено, оно в текущем узле
+	else
 	{
-		node* q = this->left; //сохраняем для объединения левую и правую ветви
+		node* q = this->left;
 		node* r = this->right;
-		free(this); //удаляем узел
-		if (!r)return q; //если ветви справа не существует, то возвращаем левую ветвь ВСЁ, ЧТО МЫ ВОЗВРАЩАЕМ МЫ ВЕРХНИХ БЛОКАХ IF ELSE ПРИСВАЕМАЕМ К ПРАВОЙ ИЛИ ЛЕВОЙ ВЕТВИ
-		node* min = r->find_min(); //находим минимальное значение в левой ветви, посути это вообще самое минимальное значение в дереве
-		min->right = r->remove_min(); //посути мы выпрямляем веточку, чтобы потом было проще её сбалансировать
-		min->left = q; //присваиваем левую ветвь на левую ветвь минимального значения
-		return min->balance(); //выполняем балансировку ветки, которую мы сейчас склеивали
+		free(this);
+		if (!r)return q;
+		node* min = r->find_min();
+		min->right = r->remove_min();
+		min->left = q;
+		return min->balance();
 	}
-	return this->balance();//выполняем балансировку всего дерева
+	return this->balance();
 }
 
 bool AvlTree::node::contains(int key)
@@ -271,7 +275,6 @@ bool AvlTree::node::contains(int key)
 void AvlTree::node::print(string indent, bool last, bool right) const
 {
 	const HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-	// you can loop k higher to see more color choices
 	if (this == nullptr) return;
 	std::cout << indent.c_str() << "+- ";
 	if (indent != "") {

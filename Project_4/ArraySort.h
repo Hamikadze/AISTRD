@@ -10,9 +10,13 @@ int* InsertionSort(int* arr, size_t size);
 int* QuickSort(int* arr, /*size_t fromIndex, */size_t size);
 int* BubbleSort(int* arr, size_t size);
 int* BogoSort(int *arr, size_t size);
-int* CopyArray(int arr[], int count);
-char* CopyArray(char arr[], int count);
 char* CountingSort(char* arr, size_t count);
-int BinarySearch(int* arr, size_t count, int num);
+int BinarySearch(const int* arr, size_t count, int num);
 int* TreeSort(int* arr, size_t count);
 int* HeapSort(int* arr, size_t count);
+bool isCorrect(const int *arr, size_t size);
+bool isCorrect(const char *arr, size_t size);
+int* RandomFill(int* arr, size_t size, int max_value, int min_value);
+
+int* CopyArray(int arr[], int count);
+char* MoveArray(const int arr[], int count);

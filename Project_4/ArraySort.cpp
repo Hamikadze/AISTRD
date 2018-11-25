@@ -23,44 +23,41 @@ ArraySort::~ArraySort()
 //Глупая сортировка(BogoSort)+
 //Сортировка подсчётом(CountingSort) для типа char+
 
+void Swap(int& first, int& second)
+{
+	const int temp = first;
+	first = second;
+	second = temp;
+}
+
 void heapify(int* arr, size_t count, int i)
 {
-	int largest = i; // Initialize largest as root
-	int l = 2 * i + 1; // left = 2*i + 1
-	int r = 2 * i + 2; // right = 2*i + 2
+	int largest = i;
+	const int left = 2 * i + 1;
+	const int right = 2 * i + 2;
 
-	// If left child is larger than root
-	if (l < count && arr[l] > arr[largest])
-		largest = l;
+	if (left < count && arr[left] > arr[largest])
+		largest = left;
 
-	// If right child is larger than largest so far
-	if (r < count && arr[r] > arr[largest])
-		largest = r;
+	if (right < count && arr[right] > arr[largest])
+		largest = right;
 
-	// If largest is not root
 	if (largest != i)
 	{
-		swap(arr[i], arr[largest]);
-
-		// Recursively heapify the affected sub-tree
+		Swap(arr[i], arr[largest]);
 		heapify(arr, count, largest);
 	}
 }
 
-// main function to do heap sort
-int* HeapSort(int* arr, size_t count)
+int* HeapSort(int* arr, size_t size)
 {
-	// Build heap (rearrange array)
-	for (int i = count / 2 - 1; i >= 0; i--)
-		heapify(arr, count, i);
+	for (int i = size / 2 - 1; i >= 0; i--)
+		heapify(arr, size, i);
 
-	// One by one extract an element from heap
-	for (int i = count - 1; i >= 0; i--)
+	for (int i = size - 1; i >= 0; i--)
 	{
-		// Move current root to end
-		swap(arr[0], arr[i]);
+		Swap(arr[0], arr[i]);
 
-		// call max heapify on the reduced heap
 		heapify(arr, i, 0);
 	}
 	return arr;
@@ -78,132 +75,135 @@ int* TreeSort(int* arr, size_t count)
 	return arr;
 }
 
-int BinarySearch(int* arr, size_t count, int num)
+int BinarySearch(const int* arr, size_t size, int num)
 {
-	// Проверить, имеет ли смыл вообще выполнять поиск:
-	// - если длина массива равна нулю - искать нечего;
-	// - если искомый элемент меньше первого элемента массива, значит, его в массиве нет;
-	// - если искомый элемент больше последнего элемента массива, значит, его в массиве нет.
-	if ((count == 0) || (num < arr[0]) || (num > arr[count - 1]))
-		throw std::out_of_range("Index is greater than list size");
+	if ((num < arr[0]) || (num > arr[size - 1]))
+		throw std::out_of_range("The number is not included in the range of the array");
 
-	// Приступить к поиску.
-	// Номер первого элемента в массиве.
 	int first = 0;
-	// Номер элемента массива, СЛЕДУЮЩЕГО за последним
-	int last = count;
-
-	// Если просматриваемый участок не пуст, first < last
+	int last = size;
 	while (first < last)
 	{
-		int mid = first + (last - first) / 2;
+		const int middle = first + (last - first) / 2;
 
-		if (num <= arr[mid])
-			last = mid;
+		if (num <= arr[middle])
+			last = middle;
 		else
-			first = mid + 1;
+			first = middle + 1;
 	}
 
-	// Теперь last может указывать на искомый элемент массива.
 	if (arr[last] == num)
 		return last;
 	else
 		return -1;
 }
 
-int Max(char* arr, size_t count)
+int Max(const char* arr, size_t count)
 {
-	char max = arr[0];
+	char maxValue = arr[0];
 	for (int i = 0; i < count; i++)
 	{
-		if (max < *(arr + i))
+		if (maxValue < *(arr + i))
 		{
-			max = *(arr + i);
+			maxValue = *(arr + i);
 		}
 	}
-	return  max;
+	return maxValue;
 }
 
-int Min(char* arr, size_t count)
+int Min(const char* arr, size_t count)
 {
-	char min = arr[0];
+	char minValue = arr[0];
 	for (int i = 0; i < count; i++)
 	{
-		if (min > *(arr + i))
+		if (minValue > *(arr + i))
 		{
-			min = *(arr + i);
+			minValue = *(arr + i);
 		}
 	}
-	return min;
+	return minValue;
 }
 
-char* CountingSort(char* arr, size_t count)
+char* CountingSort(char* arr, size_t size)
 {
-	int max = Max(arr, count);
-	int min = Min(arr, count);
-	int size = max - min + 1;
-	char* countsArray = new char[max - min + 1];
-	for (int i = min; i <= max; ++i)
-		countsArray[i - min] = 0;
+	const int maxValue = Max(arr, size);
+	const int minValue = Min(arr, size);
+	const auto countsArray = new int[maxValue - minValue + 1];
+	for (int i = 0; i < maxValue - minValue + 1; i++)
+		countsArray[i] = 0;
 
-	for (int i = 0; i < count; ++i)
-		++countsArray[arr[i] - min];
+	for (int i = 0; i < size; ++i)
+		countsArray[arr[i] - minValue]++;
 
-	for (int i = min; i <= max; ++i)
-		for (int j = countsArray[i - min]; j--;)
-			*arr++ = i;
+	int k = 0;
+	for (int i = 0; i < maxValue - minValue + 1; i++)
+		for (int j = 0; j < countsArray[i]; j++) {
+			arr[k] = i;
+			k++;
+		}
 	return arr;
 }
 
-int correct(int *arr, size_t size) {
+bool isCorrect(const int* arr, size_t size)
+{
 	for (int i = 0; i < size - 1; i++)
-		return !(arr[size] > arr[size + 1]);
+		if (arr[i] > arr[i + 1])
+			return false;
 	return true;
 }
 
-void shuffle(int *arr, size_t size) {
-	for (int i = 0; i < size; i++)
-		std::swap(arr[i], arr[(rand() % size)]);
+bool isCorrect(const char* arr, size_t size)
+{
+	for (int i = 0; i < size - 1; i++)
+		if (arr[i] > arr[i + 1])
+			return false;
+	return true;
 }
 
-int* BogoSort(int *arr, size_t size) {
-	while (!correct(arr, size))
+void shuffle(int* arr, size_t size)
+{
+	for (int i = 0; i < size; i++)
+		Swap(arr[i], arr[(rand() % size)]);
+}
+
+int* BogoSort(int* arr, size_t size)
+{
+	while (!isCorrect(arr, size))
 		shuffle(arr, size);
 	return arr;
 }
 
-int* InsertionSort(int* arr, size_t size) {
-	for (int j = 1; j < size; j++) {
-		int i = j - 1;
-
+int* InsertionSort(int* arr, size_t size)
+{
+	for (int j = 1; j < size; j++)
+	{
 		const int processedValue = arr[j];
-
-		while ((i >= 0) && (arr[i] > processedValue)) {
+		int i = j - 1;
+		for (; (i >= 0) && (arr[i] > processedValue); i--)
 			arr[i + 1] = arr[i];
-
-			i--;
-		}
-
 		arr[i + 1] = processedValue;
 	}
 
 	return arr;
 }
 
-int partition(int* arr, int fromIndex, int toIndex) {
-	int lastElementValue = arr[toIndex];
+int partition(int *arr, int fromIndex, int toIndex)
+{
+	const int last = arr[toIndex];
 	int i = fromIndex - 1;
-	for (int j = fromIndex; j < toIndex; j++) {
-		if (arr[j] <= lastElementValue) {
+	for (int j = fromIndex; j < toIndex; j++)
+	{
+		if (arr[j] <= last)
+		{
 			i++;
-			std::swap(arr[i], arr[j]);
+			Swap(arr[i], arr[j]);
 		}
 	}
-	std::swap(arr[i + 1], arr[toIndex]);
+	Swap(arr[toIndex], arr[i + 1]);
 	return i + 1;
 }
 
-int *sortArrayPart(int* arr, int fromIndex, int toIndex)
+int* sortArrayPart(int* arr, int fromIndex, int toIndex)
 {
 	if (fromIndex < toIndex)
 	{
@@ -211,9 +211,11 @@ int *sortArrayPart(int* arr, int fromIndex, int toIndex)
 		sortArrayPart(arr, fromIndex, middleIndex - 1);
 		sortArrayPart(arr, middleIndex + 1, toIndex);
 	}
-	return  arr;
+	return arr;
 }
-int* QuickSort(int* arr, /*size_t fromIndex, */size_t size) {
+
+int* QuickSort(int* arr, /*size_t fromIndex, */size_t size)
+{
 	const auto toIndex = size - 1;
 	return sortArrayPart(arr, 0, toIndex);
 }
@@ -221,28 +223,44 @@ int* QuickSort(int* arr, /*size_t fromIndex, */size_t size) {
 int* CopyArray(int arr[], int count)
 {
 	const auto new_array = new int[count];
-	memcpy(new_array, arr, sizeof(int)*count);
+	memcpy(new_array, arr, sizeof(int) * count);
 	return new_array;
 }
 
-char* CopyArray(char arr[], int count)
+char* MoveArray(const int arr[], int count)
 {
 	const auto new_array = new char[count];
-	memcpy(new_array, arr, sizeof(char)*count);
+	for (int i = 0; i < count; i++)
+	{
+		new_array[i] = arr[i];
+	}
 	return new_array;
 }
 
-int* BubbleSort(int* arr, size_t size) {
+int* BubbleSort(int* arr, size_t size)
+{
 	bool swappedElements;
-	do {
+	do
+	{
 		swappedElements = false;
 
-		for (int i = 0; i < size - 1; i++) {
-			if (arr[i] > arr[i + 1]) {
-				std::swap(arr[i], arr[i + 1]);
+		for (int i = 0; i < size - 1; i++)
+		{
+			if (arr[i] > arr[i + 1])
+			{
+				Swap(arr[i], arr[i + 1]);
 				swappedElements = true;
 			}
 		}
 	} while (swappedElements);
+	return arr;
+}
+
+int* RandomFill(int* arr, size_t size, int min_value, int max_value)
+{
+	for (int i = 0; i < size; ++i)
+	{
+		arr[i] = rand() % max_value + min_value;
+	}
 	return arr;
 }

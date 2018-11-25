@@ -6,9 +6,12 @@ using namespace std;
 
 class AvlTree
 {
+public:
 	class node
 	{
-	public:
+	private:
+		~node();
+		unsigned char height;
 		unsigned int Height();
 		int BalanceValue() const;
 		void FixHeight();
@@ -17,19 +20,18 @@ class AvlTree
 		node* balance();
 		node* find_min();
 		node* remove_min();
-		node* insert(int key);
-		node* remove(int key);
-		void Delete();
-		bool contains(int key);
-		void print(string indent, bool last, bool right) const;
+	public:
 		node(int k);
-		~node();
 		int key;
-		unsigned char height;
 		node* left;
 		node* right;
+		node* insert(int key);
+		node* remove(int key);
+		node* Delete();
+		bool contains(int key);
+		void print(string indent, bool last, bool right) const;
 	};
-private:
+public:
 	node* root;
 
 public:
