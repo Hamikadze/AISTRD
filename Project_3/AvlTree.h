@@ -2,11 +2,13 @@
 #include "Iterator.h"
 #include <stack>
 #include <queue>
+#include "../Project2/LinkedList.h"
+#include "../Project2/LinkedList.cpp"
 using namespace std;
 
 class AvlTree
 {
-public:
+public://TODO fix it
 	class node
 	{
 	private:
@@ -49,7 +51,7 @@ public:
 		bool has_next() override;
 
 	private:
-		std::stack <node*> s;
+		LinkedList<node*> list;
 		node * current;
 	};
 
@@ -64,7 +66,7 @@ public:
 		bool has_next() override;
 
 	private:
-		std::queue<node*> q;
+		LinkedList<node*> list;
 		node * current;
 	};
 	class SftIterator : public Iterator
@@ -78,7 +80,7 @@ public:
 		bool has_next() override;
 
 	private:
-		std::stack<node*> s;
+		LinkedList<node*> list;
 		node * current;
 	};
 public:

@@ -47,13 +47,13 @@ int AvlTree::DftIterator::next()
 	if (current != nullptr) {
 		const int key = current->key;
 		if (current->right != nullptr)
-			s.push(current);
+			list.push_front(current);
 		current = current->left;
 		return key;
 	}
 	if (current == nullptr) {
-		current = s.top();
-		s.pop();
+		current = list.at(0);
+		list.pop_front();
 		current = current->right;
 		next();
 	}
@@ -61,7 +61,7 @@ int AvlTree::DftIterator::next()
 
 bool AvlTree::DftIterator::has_next()
 {
-	return (s.size() || current != nullptr);
+	return (list.get_size() || current != nullptr);
 }
 
 AvlTree::node::~node()
@@ -76,33 +76,33 @@ AvlTree::node::node(int k)
 
 int AvlTree::BftIterator::next()
 {
-	if (q.size() == 0)
-		q.push(current);
-	current = q.front();
-	q.pop();
+	if (list.get_size() == 0)
+		list.push_back(current);
+	current = list.at(0);
+	list.pop_front();
 	const int key = current->key;
 	if (current->left) {
-		q.push(current->left);
+		list.push_back(current->left);
 	}
 	if (current->right) {
-		q.push(current->right);
+		list.push_back(current->right);
 	}
 	return key;
 }
 
 bool AvlTree::BftIterator::has_next()
 {
-	return (q.size() || current->left != nullptr && current->right != nullptr);
+	return (list.get_size() || current->left != nullptr && current->right != nullptr);
 }
 
 int AvlTree::SftIterator::next()
 {
 	while (current != nullptr) {
-		s.push(current);
+		list.push_front(current);
 		current = current->left;
 	}
-	current = s.top();
-	s.pop();
+	current = list.at(0);
+	list.pop_front();
 	const int key = current->key;
 	current = current->right;
 	return key;
@@ -110,7 +110,7 @@ int AvlTree::SftIterator::next()
 
 bool AvlTree::SftIterator::has_next()
 {
-	return (s.size() || current != nullptr);
+	return (list.get_size() || current != nullptr);
 }
 
 AvlTree::node* AvlTree::node::Delete()
@@ -129,6 +129,7 @@ void AvlTree::Insert(int key)
 
 void AvlTree::Remove(int key)
 {
+	//while (root->contains(key))
 	root = root->remove(key);
 }
 
@@ -243,13 +244,13 @@ AvlTree::node* AvlTree::node::remove(int key)
 	}
 	else
 	{
-		node* q = this->left;
-		node* r = this->right;
+		node* left = this->left;
+		node* right = this->right;
 		free(this);
-		if (!r)return q;
-		node* min = r->find_min();
-		min->right = r->remove_min();
-		min->left = q;
+		if (!right)return left;
+		node* min = right->find_min();
+		min->right = right->remove_min();
+		min->left = left;
 		return min->balance();
 	}
 	return this->balance();

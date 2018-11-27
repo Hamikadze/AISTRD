@@ -3,37 +3,43 @@
 #include <stdexcept>
 #include <iostream>
 
-void LinkedList::reset_list()
+template <class T>
+void LinkedList<T>::reset_list()
 {
 	head = nullptr;
 	tail = nullptr;
 	size = 0;
 }
 
-LinkedList::LinkedList()
+template <class T>
+LinkedList<T>::LinkedList()
 {
 	reset_list();
 	size = 0;
 }
 
-LinkedList::~LinkedList()
+template <class T>
+LinkedList<T>::~LinkedList()
 {
 	clear();
 }
 
-void LinkedList::add_first(int newElem)
+template <class T>
+void LinkedList<T>::add_first(T newElem)
 {
 	head = new Node(newElem);
 	tail = head;
 	size = 1;
 }
 
-size_t LinkedList::get_size() const
+template <class T>
+size_t LinkedList<T>::get_size() const
 {
 	return size;
 }
 
-void LinkedList::print_to_console() const
+template <class T>
+void LinkedList<T>::print_to_console() const
 {
 	if (size == 0)
 		return;
@@ -46,7 +52,8 @@ void LinkedList::print_to_console() const
 	std::cout << "[nullptr]" << std::endl;
 }
 
-void LinkedList::clear()
+template <class T>
+void LinkedList<T>::clear()
 {
 	if (size == 0) return;
 
@@ -65,7 +72,8 @@ void LinkedList::clear()
 	}
 }
 
-void LinkedList::set(size_t index, int newElem) const
+template <class T>
+void LinkedList<T>::set(size_t index, T newElem) const
 {
 	if (index >= size) {
 		throw std::out_of_range("Index is greater than list size");
@@ -81,12 +89,14 @@ void LinkedList::set(size_t index, int newElem) const
 	}
 }
 
-bool LinkedList::isEmpty() const
+template <class T>
+bool LinkedList<T>::isEmpty() const
 {
 	return size == 0;
 }
 
-bool LinkedList::contains(LinkedList* list) const
+template <class T>
+bool LinkedList<T>::contains(LinkedList* list) const
 {
 	if (list->size == 0) return true;
 	Node * current = head;
@@ -113,7 +123,8 @@ bool LinkedList::contains(LinkedList* list) const
 	return contains;
 }
 
-bool LinkedList::equals(LinkedList * list) const
+template <class T>
+bool LinkedList<T>::equals(LinkedList * list) const
 {
 	if (size != list->size)//if size equals
 		return false;
@@ -125,7 +136,8 @@ bool LinkedList::equals(LinkedList * list) const
 	return true;
 }
 
-void LinkedList::push_back(int newElem)
+template <class T>
+void LinkedList<T>::push_back(T newElem)
 {
 	if (size == 0) {
 		add_first(newElem);
@@ -137,7 +149,8 @@ void LinkedList::push_back(int newElem)
 	}
 }
 
-void LinkedList::push_front(int newElem)
+template <class T>
+void LinkedList<T>::push_front(T newElem)
 {
 	if (size == 0) {
 		add_first(newElem);
@@ -148,7 +161,8 @@ void LinkedList::push_front(int newElem)
 	}
 }
 
-void LinkedList::pop_back()
+template <class T>
+void LinkedList<T>::pop_back()
 {
 	if (size == 0) return;
 
@@ -166,7 +180,8 @@ void LinkedList::pop_back()
 	}
 }
 
-void LinkedList::pop_front()
+template <class T>
+void LinkedList<T>::pop_front()
 {
 	if (size == 0) return;
 
@@ -183,7 +198,8 @@ void LinkedList::pop_front()
 	}
 }
 
-void LinkedList::insert(size_t index, int newElem)
+template <class T>
+void LinkedList<T>::insert(size_t index, T newElem)
 {
 	if (index >= size + 1) {
 		throw std::out_of_range("Index is greater than list size and more than the index for teoretical last element");
@@ -224,7 +240,8 @@ void LinkedList::insert(size_t index, int newElem)
 	}
 }
 
-int LinkedList::at(size_t index) const
+template <class T>
+T LinkedList<T>::at(size_t index) const
 {
 	if (index >= size) {
 		throw std::out_of_range("Index is greater than list size");
@@ -240,7 +257,8 @@ int LinkedList::at(size_t index) const
 	}
 }
 
-void LinkedList::remove(size_t index)
+template <class T>
+void LinkedList<T>::remove(size_t index)
 {
 	if (index >= size) {
 		throw std::out_of_range("Index is greater than list size");

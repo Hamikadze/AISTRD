@@ -77,25 +77,24 @@ int* TreeSort(int* arr, size_t count)
 
 int BinarySearch(const int* arr, size_t size, int num)
 {
-	if ((num < arr[0]) || (num > arr[size - 1]))
-		throw std::out_of_range("The number is not included in the range of the array");
-
-	int first = 0;
-	int last = size;
-	while (first < last)
+	if ((num >= arr[0]) && (num <= arr[size - 1]))
 	{
-		const int middle = first + (last - first) / 2;
+		int first = 0;
+		int last = size;
+		while (first < last)
+		{
+			const int middle = first + (last - first) / 2;
 
-		if (num <= arr[middle])
-			last = middle;
-		else
-			first = middle + 1;
+			if (num <= arr[middle])
+				last = middle;
+			else
+				first = middle + 1;
+		}
+
+		if (arr[last] == num)
+			return last;
 	}
-
-	if (arr[last] == num)
-		return last;
-	else
-		return -1;
+	return -1;
 }
 
 int Max(const char* arr, size_t count)
