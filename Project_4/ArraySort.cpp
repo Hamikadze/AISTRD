@@ -68,7 +68,7 @@ int* TreeSort(int* arr, size_t count)
 	auto avl = new AvlTree();
 	for (int i = 0; i < count; i++)
 		avl->Insert(arr[i]);
-	Iterator* sortedOutput = avl->create_sft_iterator();
+	Iterator<int>* sortedOutput = avl->create_sft_iterator();
 	int i = 0;
 	while (sortedOutput->has_next())
 		arr[i++] = sortedOutput->next();
@@ -213,7 +213,7 @@ int* sortArrayPart(int* arr, int fromIndex, int toIndex)
 	return arr;
 }
 
-int* QuickSort(int* arr, /*size_t fromIndex, */size_t size)
+int* QuickSort(int* arr, size_t size)
 {
 	const auto toIndex = size - 1;
 	return sortArrayPart(arr, 0, toIndex);

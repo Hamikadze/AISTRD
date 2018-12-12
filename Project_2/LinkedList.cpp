@@ -3,7 +3,7 @@
 #include <stdexcept>
 #include <iostream>
 
-template <class T>
+template <typename T>
 void LinkedList<T>::reset_list()
 {
 	head = nullptr;
@@ -11,20 +11,35 @@ void LinkedList<T>::reset_list()
 	size = 0;
 }
 
-template <class T>
+template <typename T>
 LinkedList<T>::LinkedList()
 {
 	reset_list();
 	size = 0;
 }
 
-template <class T>
+template <typename T>
 LinkedList<T>::~LinkedList()
 {
 	clear();
 }
 
-template <class T>
+template <typename T>
+typename T LinkedList<T>::ListIterator::next()
+{
+	if (!current) return T();
+	const T data = current->data;
+	current = current->next;
+	return data;
+}
+
+template <typename T>
+bool LinkedList<T>::ListIterator::has_next()
+{
+	return (current != nullptr);
+}
+
+template <typename T>
 void LinkedList<T>::add_first(T newElem)
 {
 	head = new Node(newElem);
@@ -32,27 +47,26 @@ void LinkedList<T>::add_first(T newElem)
 	size = 1;
 }
 
-template <class T>
+template <typename T>
 size_t LinkedList<T>::get_size() const
 {
 	return size;
 }
 
-template <class T>
+template <typename T>
 void LinkedList<T>::print_to_console() const
 {
 	if (size == 0)
 		return;
-	Node * current = head;
+	auto* list = create_list_iterator();
 	std::cout << "[nullptr] <- ";
-	while (current != nullptr) {
-		std::cout << "[" << current->data << "] <- ";
-		current = current->next;
+	while (list->has_next()) {
+		std::cout << "[" << list->next() << "] <- ";
 	}
 	std::cout << "[nullptr]" << std::endl;
 }
 
-template <class T>
+template <typename T>
 void LinkedList<T>::clear()
 {
 	if (size == 0) return;
@@ -72,7 +86,7 @@ void LinkedList<T>::clear()
 	}
 }
 
-template <class T>
+template <typename T>
 void LinkedList<T>::set(size_t index, T newElem) const
 {
 	if (index >= size) {
@@ -89,13 +103,13 @@ void LinkedList<T>::set(size_t index, T newElem) const
 	}
 }
 
-template <class T>
+template <typename T>
 bool LinkedList<T>::isEmpty() const
 {
 	return size == 0;
 }
 
-template <class T>
+template <typename T>
 bool LinkedList<T>::contains(LinkedList* list) const
 {
 	if (list->size == 0) return true;
@@ -123,7 +137,22 @@ bool LinkedList<T>::contains(LinkedList* list) const
 	return contains;
 }
 
-template <class T>
+template <typename T>
+bool LinkedList<T>::contains(T data) const
+{
+	Node * current = head;
+	bool contains = false;
+	do {
+		if (current->data == data)
+		{
+			return true;
+		}
+		current = current->next;
+	} while (current != nullptr);
+	return false;
+}
+
+template <typename T>
 bool LinkedList<T>::equals(LinkedList * list) const
 {
 	if (size != list->size)//if size equals
@@ -136,7 +165,14 @@ bool LinkedList<T>::equals(LinkedList * list) const
 	return true;
 }
 
-template <class T>
+template <typename T>
+Iterator<T>* LinkedList<T>::create_list_iterator() const
+{
+	if (this == nullptr && this->head == nullptr) throw std::exception("Does not exist");
+	return new ListIterator(this->head);
+}
+
+template <typename T>
 void LinkedList<T>::push_back(T newElem)
 {
 	if (size == 0) {
@@ -149,7 +185,7 @@ void LinkedList<T>::push_back(T newElem)
 	}
 }
 
-template <class T>
+template <typename T>
 void LinkedList<T>::push_front(T newElem)
 {
 	if (size == 0) {
@@ -161,7 +197,7 @@ void LinkedList<T>::push_front(T newElem)
 	}
 }
 
-template <class T>
+template <typename T>
 void LinkedList<T>::pop_back()
 {
 	if (size == 0) return;
@@ -180,7 +216,7 @@ void LinkedList<T>::pop_back()
 	}
 }
 
-template <class T>
+template <typename T>
 void LinkedList<T>::pop_front()
 {
 	if (size == 0) return;
@@ -198,7 +234,7 @@ void LinkedList<T>::pop_front()
 	}
 }
 
-template <class T>
+template <typename T>
 void LinkedList<T>::insert(size_t index, T newElem)
 {
 	if (index >= size + 1) {
@@ -221,7 +257,7 @@ void LinkedList<T>::insert(size_t index, T newElem)
 			return;
 		}
 		size_t counter = 0;
-		Node * current = head;
+		Node* current = head;
 		Node * prev = nullptr;
 		while (counter != index) {
 			prev = current;
@@ -240,7 +276,7 @@ void LinkedList<T>::insert(size_t index, T newElem)
 	}
 }
 
-template <class T>
+template <typename T>
 T LinkedList<T>::at(size_t index) const
 {
 	if (index >= size) {
@@ -257,7 +293,7 @@ T LinkedList<T>::at(size_t index) const
 	}
 }
 
-template <class T>
+template <typename T>
 void LinkedList<T>::remove(size_t index)
 {
 	if (index >= size) {

@@ -2,8 +2,8 @@
 #include "Iterator.h"
 #include <stack>
 #include <queue>
-#include "../Project2/LinkedList.h"
-#include "../Project2/LinkedList.cpp"
+#include "../Project_2/LinkedList.h"
+#include "../Project_2/LinkedList.cpp"
 using namespace std;
 
 class AvlTree
@@ -40,7 +40,7 @@ public:
 	AvlTree(int key);
 	AvlTree();
 	~AvlTree();
-	class DftIterator : public Iterator
+	class DftIterator : public Iterator<int>
 	{
 	public:
 		DftIterator(node * root)
@@ -55,7 +55,7 @@ public:
 		node * current;
 	};
 
-	class BftIterator : public Iterator
+	class BftIterator : public Iterator<int>
 	{
 	public:
 		BftIterator(node * root)
@@ -69,7 +69,7 @@ public:
 		LinkedList<node*> list;
 		node * current;
 	};
-	class SftIterator : public Iterator
+	class SftIterator : public Iterator<int>
 	{
 	public:
 		SftIterator(node * root)
@@ -88,7 +88,7 @@ public:
 	void Remove(int key);
 	bool Contains(int key) const;
 	void Print() const;
-	Iterator* create_dft_iterator() const; // создание итератора, реализующего методы обхода в глубину (depth-first traverse)
-	Iterator* create_bft_iterator() const; // создание итератора, реализующего методы обхода в ширину (breadth-first traverse)
-	Iterator* create_sft_iterator() const;
+	Iterator<int>* create_dft_iterator() const; // создание итератора, реализующего методы обхода в глубину (depth-first traverse)
+	Iterator<int>* create_bft_iterator() const; // создание итератора, реализующего методы обхода в ширину (breadth-first traverse)
+	Iterator<int>* create_sft_iterator() const;
 };

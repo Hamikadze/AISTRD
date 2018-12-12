@@ -1,12 +1,9 @@
 ﻿#pragma once
 #include <stdexcept>
+#include "../Project_3/Iterator.h"
 
-template<class T>
-class LinkedList
-{
-private:
-	void add_first(T newElem);
-	void reset_list();
+template <typename  T>
+class LinkedList {
 	class Node
 	{
 	public:
@@ -21,18 +18,35 @@ private:
 			delete next;
 			prev = nullptr;
 			delete prev;
-			data = 0;
+			data = {};
 		};
 		T data;
-		Node * next;
-		Node * prev;
+		Node* next;
+		Node* prev;
 	};
+public:
+	void add_first(T newElem);
+	void reset_list();
 	Node * head{};
 	Node * tail{};
 	size_t size;
-public:
 	LinkedList();
 	~LinkedList();
+	class ListIterator : public Iterator<T>
+	{
+	public:
+		ListIterator(Node* head)
+		{
+			current = head;
+		};
+
+		T next() override;
+		bool has_next() override;
+
+	private:
+		//LinkedList<Node*> list;
+		Node* current;
+	};
 	void push_back(T newElem);
 	void push_front(T newElem);
 	void pop_back(); // удаление последнего элемента
@@ -46,5 +60,10 @@ public:
 	void set(size_t index, T newElem) const; // замена элемента по индексу на передаваемый элемент
 	bool isEmpty() const; // проверка на пустоту списка
 	bool contains(LinkedList* list) const; // проверка на содержание другого списка в списке
+	bool contains(T data) const;
 	bool equals(LinkedList* list) const;
+
+	Iterator<T>* create_list_iterator() const;
 };
+
+//#include "LinkedList.cpp"

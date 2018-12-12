@@ -14,19 +14,19 @@ AvlTree::AvlTree()
 	root = nullptr;
 }
 
-Iterator* AvlTree::create_dft_iterator() const
+Iterator<int>* AvlTree::create_dft_iterator() const
 {
 	if (this == nullptr && this->root == nullptr) throw std::exception("Tree does not exist");
 	return new DftIterator(this->root);
 }
 
-Iterator*AvlTree::create_bft_iterator() const
+Iterator<int>*AvlTree::create_bft_iterator() const
 {
 	if (this == nullptr && this->root == nullptr) throw std::exception("Tree does not exist");
 	return new BftIterator(this->root);
 }
 
-Iterator* AvlTree::create_sft_iterator() const
+Iterator<int>* AvlTree::create_sft_iterator() const
 {
 	if (this == nullptr && this->root == nullptr) throw std::exception("Tree does not exist");
 	return new SftIterator(this->root);

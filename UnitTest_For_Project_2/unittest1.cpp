@@ -1,7 +1,7 @@
 ﻿#include "stdafx.h"
 #include "CppUnitTest.h"
-#include "../Project2/LinkedList.h"
-#include "../Project2/LinkedList.cpp"
+#include "../Project_2/LinkedList.h"
+#include "../Project_2/LinkedList.cpp"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -410,7 +410,7 @@ namespace UnitTest_For_Project_2
 			Assert::IsFalse(list.isEmpty());
 		}
 
-		TEST_METHOD(contains_with_empty_list)
+		TEST_METHOD(contains_list_with_empty_list)
 		{
 			LinkedList<int> list1;
 			list1.push_back(1);
@@ -423,7 +423,7 @@ namespace UnitTest_For_Project_2
 			Assert::IsTrue(list1.contains(&list2));
 		}
 
-		TEST_METHOD(contains_with_fill_list_true_1)
+		TEST_METHOD(contains_list_with_fill_list_true_1)
 		{
 			LinkedList<int> list1;
 			list1.push_back(1);
@@ -437,7 +437,7 @@ namespace UnitTest_For_Project_2
 			Assert::IsTrue(list1.contains(&list2));
 		}
 
-		TEST_METHOD(contains_with_fill_list_true)
+		TEST_METHOD(contains_list_with_fill_list_true)
 		{
 			LinkedList<int> list1;
 			list1.push_back(1);
@@ -448,7 +448,7 @@ namespace UnitTest_For_Project_2
 			Assert::IsTrue(list1.contains(&list1));
 		}
 
-		TEST_METHOD(contains_with_fill_list_false)
+		TEST_METHOD(contains_list_with_fill_list_false)
 		{
 			LinkedList<int> list1;
 			list1.push_back(1);
@@ -461,6 +461,26 @@ namespace UnitTest_For_Project_2
 			list2.push_back(3);
 
 			Assert::IsFalse(list1.contains(&list2));
+		}
+
+		TEST_METHOD(contains_data_true)
+		{
+			LinkedList<int> list1;
+			list1.push_back(1);
+			list1.push_back(2);
+			list1.push_back(3);
+			list1.push_back(4);
+			Assert::IsTrue(list1.contains(1));
+		}
+
+		TEST_METHOD(contains_data_false)
+		{
+			LinkedList<int> list1;
+			list1.push_back(1);
+			list1.push_back(2);
+			list1.push_back(3);
+			list1.push_back(4);
+			Assert::IsFalse(list1.contains(5));
 		}
 	};
 }
