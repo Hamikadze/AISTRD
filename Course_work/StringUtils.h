@@ -10,7 +10,7 @@
 //	Node* next(int i);
 //};
 //
-//class StringIterator :Iterator<Node<std::pair<int, std::string>>>
+//class StringIterator :LIterator<Node<std::pair<int, std::string>>>
 //{
 //public:
 //	StringIterator(Node<Node<std::pair<int, std::string>>>* head)

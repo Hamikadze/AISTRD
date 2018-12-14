@@ -1,12 +1,11 @@
 ﻿#pragma once
 #include <stdexcept>
-#include "../Project_3/Iterator.h"
+#include "Iterator.h"
 
 template <typename  T>
 class LinkedList {
 	class Node
 	{
-	public:
 		Node(T data, Node * next = nullptr, Node * prev = nullptr) {
 			this->data = data;
 			this->next = next;
@@ -24,7 +23,6 @@ class LinkedList {
 		Node* next;
 		Node* prev;
 	};
-public:
 	void add_first(T newElem);
 	void reset_list();
 	Node * head{};
@@ -32,21 +30,22 @@ public:
 	size_t size;
 	LinkedList();
 	~LinkedList();
-	class ListIterator : public Iterator<T>
+	class ListIterator : public LIterator<T>
 	{
 	public:
 		ListIterator(Node* head)
 		{
 			current = head;
+			counter = 0;
 		};
 
+	private:
 		T next() override;
 		bool has_next() override;
-
-	private:
-		//LinkedList<Node*> list;
 		Node* current;
+		size_t counter;
 	};
+public:
 	void push_back(T newElem);
 	void push_front(T newElem);
 	void pop_back(); // удаление последнего элемента
@@ -63,7 +62,5 @@ public:
 	bool contains(T data) const;
 	bool equals(LinkedList* list) const;
 
-	Iterator<T>* create_list_iterator() const;
+	LIterator<T>* create_list_iterator() const;
 };
-
-//#include "LinkedList.cpp"

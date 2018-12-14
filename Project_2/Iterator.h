@@ -1,8 +1,8 @@
 #pragma once
 template <class T>
-class Iterator
+class LIterator
 {
 public:
-	virtual std::pair<int, T> next() = 0;
+	virtual T next() = 0; // index of data and data
 	virtual bool has_next() = 0;
 };

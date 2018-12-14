@@ -30,6 +30,7 @@ typename T LinkedList<T>::ListIterator::next()
 	if (!current) return T();
 	const T data = current->data;
 	current = current->next;
+	counter++;
 	return data;
 }
 
@@ -166,7 +167,7 @@ bool LinkedList<T>::equals(LinkedList * list) const
 }
 
 template <typename T>
-Iterator<T>* LinkedList<T>::create_list_iterator() const
+LIterator<T>* LinkedList<T>::create_list_iterator() const
 {
 	if (this == nullptr && this->head == nullptr) throw std::exception("Does not exist");
 	return new ListIterator(this->head);

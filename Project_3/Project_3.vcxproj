@@ -152,7 +152,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AvlTree.h" />
-    <ClInclude Include="Iterator.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>

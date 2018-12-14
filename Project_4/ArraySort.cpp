@@ -68,7 +68,7 @@ int* TreeSort(int* arr, size_t count)
 	auto avl = new AvlTree();
 	for (int i = 0; i < count; i++)
 		avl->Insert(arr[i]);
-	Iterator<int>* sortedOutput = avl->create_sft_iterator();
+	auto* sortedOutput = avl->create_sft_iterator();
 	int i = 0;
 	while (sortedOutput->has_next())
 		arr[i++] = sortedOutput->next();
