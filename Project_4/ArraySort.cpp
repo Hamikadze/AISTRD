@@ -6,22 +6,14 @@
 #include "../Project_3/AvlTree.h"
 #include "../Project_3/AvlTree.cpp"
 
-ArraySort::ArraySort()
-{
-}
-
-ArraySort::~ArraySort()
-{
-}
-
-//Двоичный поиск(BinarySearch)+
-//Быстрая сортировка(QuickSort)+
-//Сортировка вставками(InsertionSort)+
-//Сортировка пузырьком(BubbleSort)+
-//Сортировка с помощью двоичного дерева(TreeSort)+
-//Пирамидальная сортировка(HeapSort)+
-//Глупая сортировка(BogoSort)+
-//Сортировка подсчётом(CountingSort) для типа char+
+//Двоичный поиск(BinarySearch)+'
+//Быстрая сортировка(QuickSort)+'
+//Сортировка вставками(InsertionSort)+'
+//Сортировка пузырьком(BubbleSort)+'
+//Сортировка с помощью двоичного дерева(TreeSort)+'
+//Пирамидальная сортировка(HeapSort)+'
+//Глупая сортировка(BogoSort)+'
+//Сортировка подсчётом(CountingSort) для типа char+'
 
 void Swap(int& first, int& second)
 {
@@ -219,14 +211,14 @@ int* QuickSort(int* arr, size_t size)
 	return sortArrayPart(arr, 0, toIndex);
 }
 
-int* CopyArray(int arr[], int count)
+int* CopyArray(int arr[], size_t count)
 {
 	const auto new_array = new int[count];
 	memcpy(new_array, arr, sizeof(int) * count);
 	return new_array;
 }
 
-char* MoveArray(const int arr[], int count)
+char* MoveArray(const int arr[], size_t count)
 {
 	const auto new_array = new char[count];
 	for (int i = 0; i < count; i++)

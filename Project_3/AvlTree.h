@@ -1,7 +1,6 @@
 #pragma once
 #include <stack>
 #include <queue>
-//#include "../Project_2/LinkedList.h"
 #include "../Project_2/Iterator.h"
 #include "../Project_2/LinkedList.h"
 #include "../Project_2/LinkedList.cpp"
@@ -9,6 +8,7 @@ using namespace std;
 
 class AvlTree
 {
+public:
 	class node
 	{
 		~node();

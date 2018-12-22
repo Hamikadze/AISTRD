@@ -4,8 +4,10 @@
 
 template <typename  T>
 class LinkedList {
+public:
 	class Node
 	{
+	public:
 		Node(T data, Node * next = nullptr, Node * prev = nullptr) {
 			this->data = data;
 			this->next = next;
@@ -28,8 +30,6 @@ class LinkedList {
 	Node * head{};
 	Node * tail{};
 	size_t size;
-	LinkedList();
-	~LinkedList();
 	class ListIterator : public LIterator<T>
 	{
 	public:
@@ -46,6 +46,8 @@ class LinkedList {
 		size_t counter;
 	};
 public:
+	LinkedList();
+	~LinkedList();
 	void push_back(T newElem);
 	void push_front(T newElem);
 	void pop_back(); // удаление последнего элемента

@@ -1,11 +1,14 @@
 #pragma once
 #include <string>
 #include <vector>
-#include "../Project_2/LinkedList.h"
 #include <chrono>
+#include <iomanip>
+#include "../Project_2/Iterator.h"
+#include "../Project_2/LinkedList.h"
+#include "../Project_2/LinkedList.cpp"
 
 //#include "../Project2/LinkedList.cpp"
-class CommitRaid {
+class CommitsRaid {
 public:
 	enum action
 	{
@@ -16,7 +19,7 @@ public:
 	class commit
 	{
 	public:
-		commit();
+		commit() {};
 		commit(size_t from_index, action act, std::string replace_value = nullptr, size_t lenght = 0)
 		{
 			this->index = from_index;
@@ -29,14 +32,14 @@ public:
 		action act;
 		size_t lenght;
 		std::string replace_value;
-		~commit();
+		//~commit();
 	};
-	CommitRaid();
-	CommitRaid(LinkedList<commit> &commits, std::chrono::system_clock::time_point time)
+	CommitsRaid() {};
+	CommitsRaid(LinkedList<commit> &commits, std::time_t time)
 	{
 		this->commits = commits;
 		this->time = time;
 	}
 	LinkedList<commit> commits;
-	std::chrono::system_clock::time_point time{};
+	std::time_t time;
 };

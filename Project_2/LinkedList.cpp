@@ -21,7 +21,7 @@ LinkedList<T>::LinkedList()
 template <typename T>
 LinkedList<T>::~LinkedList()
 {
-	clear();
+	//clear();
 }
 
 template <typename T>

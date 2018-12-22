@@ -69,7 +69,7 @@ namespace UnitTest_For_Project_2
 		{
 			LinkedList<int> list;
 			list.push_back(1);
-			Assert::IsTrue(list.at(0) == 1 && list.get_size() == 1); // 1 2 3 4
+			Assert::IsTrue(list.at(0) == 1 && list.get_size() == 1);
 		}
 
 		TEST_METHOD(push_back_is_valid_2)
