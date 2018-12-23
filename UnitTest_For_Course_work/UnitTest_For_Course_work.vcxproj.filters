@@ -30,4 +30,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="unit_test_commits.bin">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="unit_test.txt">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="unit_test_original.txt">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>

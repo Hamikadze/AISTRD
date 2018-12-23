@@ -5,7 +5,7 @@
 
 class CommitsUtils :CommitsData
 {
-private:
+public:
 
 	LinkedList<std::string> temp_text;//temp text without new but with last changes
 	LinkedList<std::string> changed_text;//file with changes
@@ -19,12 +19,13 @@ public:
 	CommitsUtils(const char* path)
 	{
 		std::string path_changed(path);
-		path_changed.append(".txt");
+		int dot_index = path_changed.find_last_of(".");
 		this->path_changed = path_changed;
 		std::string path_original(path);
-		path_original.append("_original.txt");
+		path_original.insert(dot_index, "_original");
 		this->path_original = path_original;
 		std::string path_commits(path);
+		path_commits = path_commits.substr(0, dot_index);
 		path_commits.append("_commits.bin");
 		this->path_commits = path_commits;
 		read_bin(path_commits.c_str());
@@ -39,16 +40,17 @@ private:
 		//Non pointer objects, nothing to delete
 	}
 	LinkedList<std::string> read(const char* path);
-	void save(LinkedList<std::string> list, const char* path);
+	void save(LinkedList<std::string> list, const char* path) const;
 	void read_bin(const char* path);
-	void save_bin(const char* path);
-	LinkedList<std::string> get_original();
-	LinkedList<std::string> get_changed();
-	LinkedList<std::string> get_temp();
-	LinkedList<std::string> apply_commits_history(std::time_t time);
-	LinkedList<std::string> apply_commits(LinkedList<std::string> text);
-	LinkedList<std::string> apply_commit(LinkedList<std::string> text, LinkedList<commit> commit);
+	void save_bin(const char* path) const;
 public:
-	void show_commit_menu();
+	LinkedList<std::string> apply_commits_history(std::time_t time) const;
+	LinkedList<std::string> apply_commits(LinkedList<std::string> text) const;
+	LinkedList<std::string> apply_commit(LinkedList<std::string> text, LinkedList<commit> commit) const;
+	LinkedList<std::string> get_original() const;
+	LinkedList<std::string> get_changed() const;
+	LinkedList<std::string> get_temp() const;
+public:
+	void show_commit_menu() const;
 	bool analyze_changes();
 };

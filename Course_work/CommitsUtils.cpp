@@ -5,12 +5,12 @@
 
 LinkedList<std::string> CommitsUtils::read(const char* path)
 {
-	std::string line;
 	LinkedList<std::string> list;
-	std::ifstream file(path, std::ios::in);
+	std::string line;
+	std::ifstream file(path);
 	if (file)
 	{
-		while (getline(file, line))  // same as: while (getline( myfile, line ).good())
+		while (getline(file, line))
 		{
 			list.push_back(line);
 		}
@@ -27,11 +27,11 @@ LinkedList<std::string> CommitsUtils::read(const char* path)
 	return list;
 }
 
-void CommitsUtils::save(LinkedList<std::string> list, const char* path)
+void CommitsUtils::save(LinkedList<std::string> list, const char* path) const
 {
 	std::string line;
 	auto iterator = list.create_list_iterator();
-	std::ofstream file(path, std::ios::out);
+	std::ofstream file(path);
 	if (file)
 	{
 		while (iterator->has_next())
@@ -42,7 +42,7 @@ void CommitsUtils::save(LinkedList<std::string> list, const char* path)
 	file.close();
 }
 
-LinkedList<std::string> CommitsUtils::get_original()
+LinkedList<std::string> CommitsUtils::get_original() const
 {
 	LinkedList<std::string> list;
 	auto* iterator = original_text.create_list_iterator();
@@ -55,20 +55,19 @@ LinkedList<std::string> CommitsUtils::get_original()
 	return list;
 }
 
-LinkedList<std::string> CommitsUtils::get_changed()
+LinkedList<std::string> CommitsUtils::get_changed() const
 {
 	return changed_text;
 }
 
-LinkedList<std::string> CommitsUtils::get_temp()
+LinkedList<std::string> CommitsUtils::get_temp() const
 {
 	return temp_text;
 }
 
-void CommitsUtils::save_bin(const char* path)
+void CommitsUtils::save_bin(const char* path) const
 {
-	std::ofstream file;
-	file.open(path, std::ios::out | std::ios::binary);
+	std::ofstream file(path, std::ios::binary);
 	if (file) {
 		size_t size = commitRaid.get_size();
 		file.write(reinterpret_cast<const char*>(&size), sizeof(size));
@@ -102,9 +101,8 @@ void CommitsUtils::save_bin(const char* path)
 
 void CommitsUtils::read_bin(const char* path)
 {
-	std::ifstream file;
+	std::ifstream file(path, std::ios::binary);
 	commitRaid.clear();
-	file.open(path, std::ios::in | std::ios::binary);
 	if (file)
 	{
 		size_t size = 0;
@@ -138,12 +136,11 @@ void CommitsUtils::read_bin(const char* path)
 	}
 }
 
-void CommitsUtils::show_commit_menu()
+void CommitsUtils::show_commit_menu() const
 {
 	LinkedList<std::string> commits_history;
 	commits_history.clear();
 	auto* iterator = commitRaid.create_list_iterator();
-	int size = commitRaid.get_size();
 	while (iterator->has_next())
 	{
 		CommitsData data = iterator->next();
@@ -164,7 +161,7 @@ void CommitsUtils::show_commit_menu()
 	save(text, "temp.txt");
 }
 
-LinkedList<std::string> CommitsUtils::apply_commits_history(std::time_t time)
+LinkedList<std::string> CommitsUtils::apply_commits_history(std::time_t time) const
 {
 	auto* commits_iterator = commitRaid.create_list_iterator();
 	auto text = get_original();
@@ -180,7 +177,7 @@ LinkedList<std::string> CommitsUtils::apply_commits_history(std::time_t time)
 	return text;
 };
 
-LinkedList<std::string> CommitsUtils::apply_commits(LinkedList<std::string> text)
+LinkedList<std::string> CommitsUtils::apply_commits(LinkedList<std::string> text) const
 {
 	if (!commitRaid.isEmpty())
 	{
@@ -194,7 +191,7 @@ LinkedList<std::string> CommitsUtils::apply_commits(LinkedList<std::string> text
 	return  text;
 }
 
-LinkedList<std::string> CommitsUtils::apply_commit(LinkedList<std::string> text, LinkedList<commit> commit)
+LinkedList<std::string> CommitsUtils::apply_commit(LinkedList<std::string> text, LinkedList<commit> commit) const
 {
 	if (!commit.isEmpty())
 	{
