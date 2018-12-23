@@ -3,83 +3,198 @@
 #include <fstream>
 #include <iostream>
 
-void CommitsUtils::save()
+LinkedList<std::string> CommitsUtils::read(const char* path)
 {
-	size_t size = commitRaid.get_size();
-	file_stream.write(reinterpret_cast<const char*>(&size), sizeof(size));
-
-	auto* iterator = commitRaid.create_list_iterator();
-
-	for (size_t i = 0; i < size; i++)
+	std::string line;
+	LinkedList<std::string> list;
+	std::ifstream file(path, std::ios::in);
+	if (file)
 	{
-		auto item = iterator->next();
-		file_stream.write(reinterpret_cast<const char*>(&item.time), sizeof(item.time));
-
-		size_t commit_size = commitRaid.get_size();
-		file_stream.write(reinterpret_cast<const char*>(&commit_size), sizeof(commit_size));
-
-		auto* commit_iter = item.commits.create_list_iterator();
-
-		for (size_t j = 0; j < commit_size; j++)
+		while (getline(file, line))  // same as: while (getline( myfile, line ).good())
 		{
-			auto commit_item = commit_iter->next();
-			file_stream.write(reinterpret_cast<const char*>(&commit_item.index), sizeof(commit_item.index));
-			file_stream.write(reinterpret_cast<const char*>(&commit_item.act), sizeof(commit_item.act));
-			file_stream.write(reinterpret_cast<const char*>(&commit_item.lenght), sizeof(commit_item.lenght));
-			size_t string_size = commit_item.replace_value.size();
-			file_stream.write(reinterpret_cast<const char*>(&string_size), sizeof(string_size));
-			file_stream.write(commit_item.replace_value.c_str(), commit_item.replace_value.size());
+			list.push_back(line);
 		}
+		//file.close();
+		std::cout << path << " loaded!\n";
+	}
+	else
+	{
+		list = read(path_changed.c_str());
+		save(list, path);
+		analyze_changes();
+	}
+	file.close();
+	return list;
+}
+
+void CommitsUtils::save(LinkedList<std::string> list, const char* path)
+{
+	std::string line;
+	auto iterator = list.create_list_iterator();
+	std::ofstream file(path, std::ios::out);
+	if (file)
+	{
+		while (iterator->has_next())
+			file << iterator->next() << std::endl;
+		//file.close();
+		std::cout << path << " saved!\n";
+	}
+	file.close();
+}
+
+LinkedList<std::string> CommitsUtils::get_original()
+{
+	LinkedList<std::string> list;
+	auto* iterator = original_text.create_list_iterator();
+	while (iterator->has_next())
+	{
+		std::string line = iterator->next();
+		std::string h = line;
+		list.push_back(line);
+	}
+	return list;
+}
+
+LinkedList<std::string> CommitsUtils::get_changed()
+{
+	return changed_text;
+}
+
+LinkedList<std::string> CommitsUtils::get_temp()
+{
+	return temp_text;
+}
+
+void CommitsUtils::save_bin(const char* path)
+{
+	std::ofstream file;
+	file.open(path, std::ios::out | std::ios::binary);
+	if (file) {
+		size_t size = commitRaid.get_size();
+		file.write(reinterpret_cast<const char*>(&size), sizeof(size));
+
+		auto* iterator = commitRaid.create_list_iterator();
+
+		for (size_t i = 0; i < size; i++)
+		{
+			auto item = iterator->next();
+			file.write(reinterpret_cast<const char*>(&item.time), sizeof(item.time));
+
+			size_t commit_size = item.commits.get_size();
+			file.write(reinterpret_cast<const char*>(&commit_size), sizeof(commit_size));
+
+			auto* commit_iter = item.commits.create_list_iterator();
+
+			for (size_t j = 0; j < commit_size; j++)
+			{
+				auto commit_item = commit_iter->next();
+				file.write(reinterpret_cast<const char*>(&commit_item.index), sizeof(commit_item.index));
+				file.write(reinterpret_cast<const char*>(&commit_item.act), sizeof(commit_item.act));
+				size_t string_size = commit_item.replace_value.size();
+				file.write(reinterpret_cast<const char*>(&string_size), sizeof(string_size));
+				file.write(commit_item.replace_value.c_str(), commit_item.replace_value.size());
+			}
+		}
+		file.close();
+		std::cout << path << " saved!\n";
 	}
 }
 
-void CommitsUtils::read()
+void CommitsUtils::read_bin(const char* path)
 {
-	size_t size = 0;
-	file_stream.read(reinterpret_cast<char*>(&size), sizeof(size));
-
-	for (size_t i = 0; i < size; ++i)
+	std::ifstream file;
+	commitRaid.clear();
+	file.open(path, std::ios::in | std::ios::binary);
+	if (file)
 	{
-		CommitsRaid item;
-		file_stream.read(reinterpret_cast<char*>(&item.time),
-			sizeof(item.time));
-		size_t commit_size = 0;
-		file_stream.read(reinterpret_cast<char*>(&commit_size), sizeof(commit_size));
-		for (size_t j = 0; j < commit_size; j++) {
-			CommitsRaid::commit commit_item;
-			file_stream.read(reinterpret_cast<char*>(&commit_item.index), sizeof(commit_item.index));
-			file_stream.read(reinterpret_cast<char*>(&commit_item.act), sizeof(commit_item.act));
-			file_stream.read(reinterpret_cast<char*>(&commit_item.lenght), sizeof(commit_item.lenght));
-			size_t string_size;
-			file_stream.read(reinterpret_cast<char*>(&string_size), sizeof(string_size));
-			commit_item.replace_value.resize(string_size);
-			file_stream.read(&commit_item.replace_value[0], commit_item.replace_value.size());
-			item.commits.push_back(commit_item);
+		size_t size = 0;
+		file.read(reinterpret_cast<char*>(&size), sizeof(size));
+
+		for (size_t i = 0; i < size; ++i)
+		{
+			CommitsData item;
+			file.read(reinterpret_cast<char*>(&item.time),
+				sizeof(item.time));
+			size_t commit_size = 0;
+			file.read(reinterpret_cast<char*>(&commit_size), sizeof(commit_size));
+			for (size_t j = 0; j < commit_size; j++) {
+				commit commit_item;
+				file.read(reinterpret_cast<char*>(&commit_item.index), sizeof(commit_item.index));
+				file.read(reinterpret_cast<char*>(&commit_item.act), sizeof(commit_item.act));
+				size_t string_size;
+				file.read(reinterpret_cast<char*>(&string_size), sizeof(string_size));
+				commit_item.replace_value.resize(string_size);
+				file.read(&commit_item.replace_value[0], commit_item.replace_value.size());
+				item.commits.push_back(commit_item);
+			}
+			commitRaid.push_back(item);
 		}
-		commitRaid.push_back(item);
+		file.close();
+		std::cout << path << " loaded!\n";
+	}
+	else
+	{
+		save_bin(path);
 	}
 }
 
 void CommitsUtils::show_commit_menu()
 {
+	LinkedList<std::string> commits_history;
+	commits_history.clear();
 	auto* iterator = commitRaid.create_list_iterator();
+	int size = commitRaid.get_size();
 	while (iterator->has_next())
 	{
-		std::time_t raw_time = iterator->next().time;
+		CommitsData data = iterator->next();
+		std::time_t raw_time = data.time;
 		struct tm timeinfo;
 		localtime_s(&timeinfo, &raw_time);
 		char buffer[80];
 
+		//Item<void(*)(CommitsUtils*), CommitsUtils*>
 		strftime(buffer, 80, "%X %x", &timeinfo);
-		std::cout << buffer << std::endl;
+		commits_history.push_back(std::string(buffer));
 	}
+	Menu menu("Commits history");
+	auto selection = menu.Show(commits_history);
+	if (selection == -1 || selection >= commitRaid.get_size())
+		return;
+	auto text = apply_commits_history(commitRaid.at(selection).time);
+	save(text, "temp.txt");
 }
 
-//first second - indexes => apply
-//first - index & second - 0 => insert to first index
-//first - index & second - -1 => remove line on index
+LinkedList<std::string> CommitsUtils::apply_commits_history(std::time_t time)
+{
+	auto* commits_iterator = commitRaid.create_list_iterator();
+	auto text = get_original();
+	while (commits_iterator->has_next())
+	{
+		auto commit = commits_iterator->next();
+		text = apply_commit(text, commit.commits);
+		if (commit.time == time)
+		{
+			break;
+		}
+	}
+	return text;
+};
 
-void Apply_Commit(LinkedList<std::string>& text, LinkedList<CommitsRaid::commit>& commit)
+LinkedList<std::string> CommitsUtils::apply_commits(LinkedList<std::string> text)
+{
+	if (!commitRaid.isEmpty())
+	{
+		auto* changed_iter = commitRaid.create_list_iterator();
+		while (changed_iter->has_next())
+		{
+			auto value = changed_iter->next();
+			text = apply_commit(text, value.commits);
+		}
+	}
+	return  text;
+}
+
+LinkedList<std::string> CommitsUtils::apply_commit(LinkedList<std::string> text, LinkedList<commit> commit)
 {
 	if (!commit.isEmpty())
 	{
@@ -89,99 +204,72 @@ void Apply_Commit(LinkedList<std::string>& text, LinkedList<CommitsRaid::commit>
 			const auto value = commit_iter->next();
 			switch (value.act)
 			{
-			case CommitsRaid::remove://remove
+			case remove://remove
 				text.remove(value.index);
 				break;
-			case CommitsRaid::insert://insert
+			case insert://insert
 				text.insert(value.index, value.replace_value);
 				break;
-			case CommitsRaid::replace://replace
+			case replace://replace
 				text.set(value.index, value.replace_value);
 				break;
 			default:
-				//TODO add exception
 				break;
 			}
 		}
 	}
+	return text;
 }
-//
-//void CommitsUtils::Apply_Commits(LinkedList<std::string>& text)
-//{
-//	if (!commitRaid.isEmpty())
-//	{
-//		auto* changed_iter = commitRaid.create_list_iterator();
-//		while (changed_iter->has_next())
-//		{
-//			auto value = changed_iter->next();
-//			Apply_Commit(text, value.commits);
-//		}
-//	}
-//}
 
-void CommitsUtils::Analyze_Changes(LinkedList<std::string> &changed_text, LinkedList<std::string> &temp_text)
+bool CommitsUtils::analyze_changes()
 {
-	LinkedList<CommitsRaid::commit> commits;
+	changed_text = read(path_changed.c_str());
+	LinkedList<commit> commits;
 	auto* changed_iter = changed_text.create_list_iterator();
 	auto* temp_iter = temp_text.create_list_iterator();
-	int count_temp = 0;
-	int count_changed = 0;
+	int index = 0;
 	if (temp_text.isEmpty() || changed_text.isEmpty())
 	{
-		int count = 0;
-		if (temp_text.isEmpty()) {
+		if (!temp_iter->has_next()) {
 			while (changed_iter->has_next()) {
-				commits.push_back(CommitsRaid::commit(count++, CommitsRaid::insert, changed_iter->next()));
+				commits.push_back(commit(index++, insert, changed_iter->next()));
 			}
 		}
-		else if (changed_text.isEmpty())
+		else if (!changed_iter->has_next())
 		{
 			while (temp_iter->has_next()) {
-				commits.push_back(CommitsRaid::commit(0, CommitsRaid::remove, temp_iter->next()));
+				commits.push_back(commit(0, remove, temp_iter->next()));
 			}
 		}
 	}
-	else {
-		while (changed_text.get_size() > count_changed)
-		{
-			std::string line = changed_text.at(count_changed);
-
-			if (temp_text.get_size() > count_temp && line != temp_text.at(count_temp))
-			{
-				if (temp_text.get_size() > (count_temp + 1) && line == temp_text.at(count_temp + 1))
-				{
-					commits.push_back(CommitsRaid::commit(count_changed, CommitsRaid::remove));
-					count_temp += 2;
-					count_changed++;
-				}
-				else
-				{
-					if (temp_text.get_size() > (count_temp + 1) && changed_text.get_size() > (count_changed + 1) && changed_text.at(count_changed + 1) == temp_text.at(count_temp + 1))
-					{
-						commits.push_back(CommitsRaid::commit(count_changed, CommitsRaid::replace, line));
-						count_temp += 2;
-						count_changed += 2;
-					}
-					else
-					{
-						commits.push_back(CommitsRaid::commit(count_changed, CommitsRaid::insert, line));
-					}
-				}
-			}
-			count_temp++;
-			count_changed++;
-		}
-	}
-
-	//Apply_Commit(temp_text, commits);
-	const CommitsRaid raid(commits, std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()));
-	commitRaid.push_back(raid);
-	//===========================
-	std::ofstream commits_file_out("commits.txt", std::ios::out);
-	if (commits_file_out)
+	else
 	{
-		std::cout << "commits.txt saved!\n";
-		save();
+		while (changed_iter->has_next() && temp_iter->has_next())
+		{
+			std::string line = changed_iter->next();
+
+			if (line != temp_iter->next())
+			{
+				commits.push_back(commit(index, replace, line));
+			}
+			index++;
+		}
+		if (!temp_iter->has_next()) {
+			while (changed_iter->has_next()) {
+				commits.push_back(commit(index++, insert, changed_iter->next()));
+			}
+		}
+		else if (!changed_iter->has_next())
+		{
+			while (temp_iter->has_next()) {
+				commits.push_back(commit(index, remove, temp_iter->next()));
+			}
+		}
 	}
-	commits_file_out.close();
+
+	const CommitsData raid(commits, std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()));
+	commitRaid.push_back(raid);
+	temp_text = apply_commit(temp_text, commits);
+	save_bin(path_commits.c_str());
+	return temp_text.equals(&changed_text);
 }

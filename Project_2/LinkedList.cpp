@@ -15,7 +15,6 @@ template <typename T>
 LinkedList<T>::LinkedList()
 {
 	reset_list();
-	size = 0;
 }
 
 template <typename T>
@@ -30,7 +29,6 @@ typename T LinkedList<T>::ListIterator::next()
 	if (!current) return T();
 	const T data = current->data;
 	current = current->next;
-	counter++;
 	return data;
 }
 
@@ -265,7 +263,7 @@ void LinkedList<T>::insert(size_t index, T newElem)
 			current = current->next;
 			counter++;
 		}
-		current = new Node(newElem, current);
+		current = new Node(newElem, current, prev);
 		if (prev != nullptr) {
 			prev->next = current;
 		}

@@ -1,0 +1,71 @@
+void CommitsUtils::analyze_changes(LinkedList<std::string> changed_text, LinkedList<std::string> &temp_text)
+{
+	changed_text = read(path_changed.c_str());
+	LinkedList<commit> commits;
+	auto* changed_iter = changed_text.create_list_iterator();
+	auto* temp_iter = temp_text.create_list_iterator();
+	int count_temp = 0;
+	int count_temp_applyed = 0;
+	int count_changed = 0;
+	if (temp_text.isEmpty() || changed_text.isEmpty())
+	{
+		int count = 0;
+		if (temp_text.isEmpty()) {
+			while (changed_iter->has_next()) {
+				commits.push_back(commit(count++, insert, changed_iter->next()));
+			}
+		}
+		else if (changed_text.isEmpty())
+		{
+			while (temp_iter->has_next()) {
+				commits.push_back(commit(0, remove, temp_iter->next()));
+			}
+		}
+	}
+	else
+	{
+		while (changed_text.get_size() > count_changed)
+		{
+			std::string line = changed_text.at(count_changed);
+
+			if (temp_text.get_size() > count_temp && line != temp_text.at(count_temp))
+			{
+				if (temp_text.get_size() > (count_temp + 1) && line == temp_text.at(count_temp + 1))
+				{
+					commits.push_back(commit(count_temp_applyed, remove));
+					count_temp += 2;
+					count_changed += 1;
+					count_temp_applyed--;
+				}
+				else
+				{
+					if (temp_text.get_size() > (count_temp + 1) && changed_text.get_size() > (count_changed + 1) && changed_text.at(count_changed + 1) == temp_text.at(count_temp + 1))
+					{
+						commits.push_back(commit(count_temp_applyed, replace, line));
+						count_temp += 1;
+						count_changed += 1;
+						count_temp_applyed += 1;
+					}
+					else
+					{
+						commits.push_back(commit(count_temp_applyed, insert, line));
+						count_temp++;
+						count_changed++;
+						count_temp_applyed += 2;
+					}
+				}
+			}
+			else {
+				count_temp++;
+				count_changed++;
+				count_temp_applyed++;
+			}
+		}
+	}
+
+	const CommitsData raid(commits, std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()));
+	apply_commit(temp_text, commits);
+	commitRaid.push_back(raid);
+	save_bin(path_commits.c_str());
+	save(temp_text, "gggg.txt");
+}

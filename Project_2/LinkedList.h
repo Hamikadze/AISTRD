@@ -36,14 +36,12 @@ public:
 		ListIterator(Node* head)
 		{
 			current = head;
-			counter = 0;
 		};
 
 	private:
 		T next() override;
 		bool has_next() override;
 		Node* current;
-		size_t counter;
 	};
 public:
 	LinkedList();

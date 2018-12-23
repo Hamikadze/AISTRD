@@ -1,36 +1,54 @@
 #pragma once
 #include <string>
-#include <iostream>
-#include "CommitsRaid.h"
+#include "CommitsUtils.h"
 
-template<typename T>
-struct TypeHelper
-{
-	typedef void(*IntFunctionWithOneParameter) (T a);
-};
-
-template<typename T>
-class Item
-{
-public:
-	Item(const char* label, typename TypeHelper<T>::IntFunctionWithOneParameter function, T parameter)
-	{
-		this->label = label;
-		this->function = function;
-		this->parameter = parameter;
-	}
-	const char* label;
-	typename TypeHelper<T>::IntFunctionWithOneParameter function;
-	T parameter;
-};
-
-template<typename T>
 class Menu
 {
-private:
-	std::string header;
+	const char* header;
 public:
-	Menu(std::string header);
-	void Show(Item<T> item[]);
-	~Menu();
+	Menu(const char* header)
+	{
+		this->header = header;
+	}
+	int Show(LinkedList<std::string> list)
+	{
+		std::cout << "==========================================\n"
+			"            " << header << "\n"
+			"==========================================\n";
+		size_t size = list.get_size();
+		do
+		{
+			auto* print_iterator = list.create_list_iterator();
+			int count = 0;
+			while (print_iterator->has_next())
+			{
+				std::cout << "[" << count++ << "] " << print_iterator->next() << std::endl;
+			}
+			std::cout << "[" << size << "] EXIT/RETURN" << std::endl;
+			std::cout << "Select an item : ";
+			int select;
+			std::cin >> select;
+			if (select == size)
+			{
+				return select;
+			}
+			auto* select_iterator = list.create_list_iterator();
+			count = 0;
+			while (select_iterator->has_next())
+			{
+				auto item = select_iterator->next();
+				if (select == count)
+				{
+					return select;
+				}
+				count++;
+			}
+		} while (true);
+		return -1;
+	};
+	~Menu()
+	{
+		header = nullptr;
+		delete[] header;
+	};
 };
