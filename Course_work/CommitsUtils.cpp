@@ -19,9 +19,15 @@ LinkedList<std::string> CommitsUtils::read(const char* path)
 	}
 	else
 	{
+		//if (path == path_original.c_str()) {
 		list = read(path_changed.c_str());
 		save(list, path);
 		analyze_changes();
+		//}
+		//else
+		//{
+			//throw "File not found!";
+		//}
 	}
 	file.close();
 	return list;
@@ -38,6 +44,10 @@ void CommitsUtils::save(LinkedList<std::string> list, const char* path) const
 			file << iterator->next() << std::endl;
 		//file.close();
 		std::cout << path << " saved!\n";
+	}
+	else
+	{
+		//throw "File not found!";
 	}
 	file.close();
 }
@@ -96,6 +106,10 @@ void CommitsUtils::save_bin(const char* path) const
 		}
 		file.close();
 		std::cout << path << " saved!\n";
+	}
+	else
+	{
+		throw "File not found!";
 	}
 }
 
@@ -158,7 +172,7 @@ void CommitsUtils::show_commit_menu() const
 	if (selection == -1 || selection >= commitRaid.get_size())
 		return;
 	auto text = apply_commits_history(commitRaid.at(selection).time);
-	save(text, "temp.txt");
+	save(text, path_temp.c_str());
 }
 
 LinkedList<std::string> CommitsUtils::apply_commits_history(std::time_t time) const

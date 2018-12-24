@@ -14,25 +14,39 @@ public:
 	std::string path_original;
 	std::string path_changed;
 	std::string path_commits;
+	std::string path_temp;
 
 public:
 	CommitsUtils(const char* path)
 	{
-		std::string path_changed(path);
-		int dot_index = path_changed.find_last_of(".");
-		this->path_changed = path_changed;
-		std::string path_original(path);
-		path_original.insert(dot_index, "_original");
-		this->path_original = path_original;
-		std::string path_commits(path);
-		path_commits = path_commits.substr(0, dot_index);
-		path_commits.append("_commits.bin");
-		this->path_commits = path_commits;
-		read_bin(path_commits.c_str());
-		changed_text = read(path_changed.c_str());
-		original_text = read(path_original.c_str());
-		temp_text = get_original();
-		temp_text = apply_commits(temp_text);
+		try {
+			std::string path_changed(path);
+			int dot_index = path_changed.find_last_of(".");
+			this->path_changed = path_changed;
+
+			std::string path_original(path);
+			path_original.insert(dot_index, "_original");
+			this->path_original = path_original;
+
+			std::string path_temp(path);
+			path_temp.insert(dot_index, "_temp");
+			this->path_temp = path_temp;
+
+			std::string path_commits(path);
+			path_commits = path_commits.substr(0, dot_index);
+			path_commits.append("_commits.bin");
+
+			this->path_commits = path_commits;
+			read_bin(path_commits.c_str());
+			changed_text = read(path_changed.c_str());
+			original_text = read(path_original.c_str());
+			temp_text = get_original();
+			temp_text = apply_commits(temp_text);
+		}
+		catch (char* e)
+		{
+			throw e;
+		}
 	};
 private:
 	~CommitsUtils()

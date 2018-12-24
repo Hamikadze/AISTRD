@@ -11,12 +11,35 @@ namespace UnitTest_For_Course_work
 	{
 	public:
 
-		TEST_METHOD(IsInitializationSuccess)
+		TEST_METHOD(IsInitializationWrong)
+		{
+			try {
+				auto commits = new CommitsUtils("C:\\Users\\besth\\OneDrive\\Visual Studio 2017\\Projects\\AISTRD\\UnitTest_For_Course_work\\NON.txt");
+				Assert::IsTrue(commits->path_changed == "C:\\Users\\besth\\OneDrive\\Visual Studio 2017\\Projects\\AISTRD\\UnitTest_For_Course_work\\unit_test.txt" &&
+					commits->path_commits == "C:\\Users\\besth\\OneDrive\\Visual Studio 2017\\Projects\\AISTRD\\UnitTest_For_Course_work\\unit_test_commits.bin" &&
+					commits->path_original == "C:\\Users\\besth\\OneDrive\\Visual Studio 2017\\Projects\\AISTRD\\UnitTest_For_Course_work\\unit_test_original.txt");
+			}
+			catch (char* e)
+			{
+				Assert::IsTrue(e == "File not found!");
+			}
+		}
+
+		TEST_METHOD(IsInitializationSuccessChanged)
 		{
 			auto commits = new CommitsUtils("C:\\Users\\besth\\OneDrive\\Visual Studio 2017\\Projects\\AISTRD\\UnitTest_For_Course_work\\unit_test.txt");
-			Assert::IsTrue(commits->path_changed == "C:\\Users\\besth\\OneDrive\\Visual Studio 2017\\Projects\\AISTRD\\UnitTest_For_Course_work\\unit_test.txt" &&
-				commits->path_commits == "C:\\Users\\besth\\OneDrive\\Visual Studio 2017\\Projects\\AISTRD\\UnitTest_For_Course_work\\unit_test_commits.bin" &&
-				commits->path_original == "C:\\Users\\besth\\OneDrive\\Visual Studio 2017\\Projects\\AISTRD\\UnitTest_For_Course_work\\unit_test_original.txt");
+			Assert::IsTrue(commits->path_changed == "C:\\Users\\besth\\OneDrive\\Visual Studio 2017\\Projects\\AISTRD\\UnitTest_For_Course_work\\unit_test.txt");
+		}
+
+		TEST_METHOD(IsInitializationSuccessOriginal)
+		{
+			auto commits = new CommitsUtils("C:\\Users\\besth\\OneDrive\\Visual Studio 2017\\Projects\\AISTRD\\UnitTest_For_Course_work\\unit_test.txt");
+			Assert::IsTrue(commits->path_original == "C:\\Users\\besth\\OneDrive\\Visual Studio 2017\\Projects\\AISTRD\\UnitTest_For_Course_work\\unit_test_original.txt");
+		}
+		TEST_METHOD(IsInitializationSuccessCommits)
+		{
+			auto commits = new CommitsUtils("C:\\Users\\besth\\OneDrive\\Visual Studio 2017\\Projects\\AISTRD\\UnitTest_For_Course_work\\unit_test.txt");
+			Assert::IsTrue(commits->path_commits == "C:\\Users\\besth\\OneDrive\\Visual Studio 2017\\Projects\\AISTRD\\UnitTest_For_Course_work\\unit_test_commits.bin");
 		}
 
 		TEST_METHOD(IsReadingFunctionsWorkForOriginal)
@@ -79,8 +102,8 @@ namespace UnitTest_For_Course_work
 		}
 
 		//1545596592 - first commit 1 2 3 4
-
-		TEST_METHOD(IsApplyHistoryMethodWork)
+		//1545596724
+		TEST_METHOD(IsApplyHistoryMethodWork1)
 		{
 			auto commits = new CommitsUtils("C:\\Users\\besth\\OneDrive\\Visual Studio 2017\\Projects\\AISTRD\\UnitTest_For_Course_work\\unit_test.txt");
 			auto history_list = commits->apply_commits_history(std::time_t(1545596592));
@@ -89,6 +112,18 @@ namespace UnitTest_For_Course_work
 			list.push_back("2");
 			list.push_back("3");
 			list.push_back("4");
+			Assert::IsTrue(list.equals(&history_list));
+		}
+		TEST_METHOD(IsApplyHistoryMethodWork2)
+		{
+			auto commits = new CommitsUtils("C:\\Users\\besth\\OneDrive\\Visual Studio 2017\\Projects\\AISTRD\\UnitTest_For_Course_work\\unit_test.txt");
+			auto history_list = commits->apply_commits_history(std::time_t(1545596724));
+			LinkedList<std::string> list;
+			list.push_back("1");
+			list.push_back("2");
+			list.push_back("3");
+			list.push_back("4");
+			list.push_back("5");
 			Assert::IsTrue(list.equals(&history_list));
 		}
 	};
