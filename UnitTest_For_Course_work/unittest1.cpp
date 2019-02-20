@@ -11,20 +11,6 @@ namespace UnitTest_For_Course_work
 	{
 	public:
 
-		TEST_METHOD(IsInitializationWrong)
-		{
-			try {
-				auto commits = new CommitsUtils("C:\\Users\\besth\\OneDrive\\Visual Studio 2017\\Projects\\AISTRD\\UnitTest_For_Course_work\\NON.txt");
-				Assert::IsTrue(commits->path_changed == "C:\\Users\\besth\\OneDrive\\Visual Studio 2017\\Projects\\AISTRD\\UnitTest_For_Course_work\\unit_test.txt" &&
-					commits->path_commits == "C:\\Users\\besth\\OneDrive\\Visual Studio 2017\\Projects\\AISTRD\\UnitTest_For_Course_work\\unit_test_commits.bin" &&
-					commits->path_original == "C:\\Users\\besth\\OneDrive\\Visual Studio 2017\\Projects\\AISTRD\\UnitTest_For_Course_work\\unit_test_original.txt");
-			}
-			catch (char* e)
-			{
-				Assert::IsTrue(e == "File not found!");
-			}
-		}
-
 		TEST_METHOD(IsInitializationSuccessChanged)
 		{
 			auto commits = new CommitsUtils("C:\\Users\\besth\\OneDrive\\Visual Studio 2017\\Projects\\AISTRD\\UnitTest_For_Course_work\\unit_test.txt");
